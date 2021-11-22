@@ -7,14 +7,14 @@ from tensorflow.keras.datasets import mnist
 # Task 1: Normalize the train and test images to be between 0 and 1. Expand the dimensions as well
 
 
-# Validation Task 1
-# This is for validation only, after you finish the task feel free to remove the prints and the exit command
+## Validation Task 1
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
 
 print(train_images.shape)
 print(np.max(train_images[0]))
 exit(0)
 
-# End of validation of task 1.
+## End of validation of task 1. (please remove prints and exits after ending it)
 
 # Task 2: Create a model that has the following structure:
 
@@ -25,11 +25,16 @@ exit(0)
 
 model = None  # FILL ME
 
-print(model.summary())
-
 model.compile(optimizer=tf.keras.optimizers.Adam(),
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
+
+## Validation Task 2
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+print(model.summary())
+exit(0)
+
+## End of validation of task 2. (please remove prints and exits after ending it)
 
 # Task 3: Train the model for 2 epochs and pass the validation data to be the test images and labels
 
@@ -37,4 +42,4 @@ model.fit()  # Fill the required kwargs here
 
 model.evaluate(test_images, test_labels)
 
-tf.saved_model.save(model, 'mnist_classifier')
+model.save('mnist_classifier')
