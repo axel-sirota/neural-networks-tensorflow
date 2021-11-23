@@ -128,3 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea
+Car_Brand_Logos_bkp
+checker.py
+logo_classifier
+mnist_classifier
