@@ -20,37 +20,41 @@ steps_per_epoch = np.ceil(image_count_train / train_batch_size)
 class_names = np.array([item.name for item in data_dir.glob('Train/*') if item.name != "LICENSE.txt"])
 num_classes = len(class_names)
 
-test_ds = tf.data.Dataset.list_files(str(data_dir / 'Test/*/*'))
-train_ds = tf.data.Dataset.list_files(str(data_dir / 'Train/*/*'))
+# Task 1: Code the following 4 methods to:
 
+# - Create a generator of all the files under the train and test folders
+# - Get the label out of the file path (labels go from 0 to 7)
+# - Read the image
+# - Decode the image from jpeg, convert to float32, resize to 224 x 224 and normalize.
+
+def create_generator(folder):
+    generator = ()
+    # FILL ME
+    return generator
 
 def get_label(file_path):
-    parts = tf.strings.split(file_path, os.path.sep)
-    return class_names == parts[-2]
+    label = 0
+    # FILL ME
+    return label
 
 
 def decode_img(img):
-    img = tf.image.decode_jpeg(img, channels=3)
-    img = tf.image.convert_image_dtype(img, tf.float32)
-    return tf.image.resize(img, [img_rows, img_cols])
+    decoded_img = None  # FILL ME
+    return decoded_img
 
 
 def process_path(file_path):
     label = get_label(file_path)
-    img = tf.io.read_file(file_path)
+    img = None # FILL to read img
     img = decode_img(img)
     return img, label
 
-
-def format_image(image, label):
-    image = tf.image.resize(image, (img_rows, img_cols)) / 255.0
-    return image, label
-
-
+test_ds = create_generator('Test')
+train_ds = create_generator('Train')
 train_examples = train_ds.map(process_path)
 test_examples = test_ds.map(process_path)
 
-
+# This is to create batches out of our generators, it is not key to the learning objectives and can be copied as is
 def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
     if cache:
         if isinstance(cache, str):
@@ -63,32 +67,46 @@ def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
     ds = ds.prefetch(buffer_size=AUTOTUNE)
     return ds
 
-
 train_examples_dataset = prepare_for_training(train_examples)
 test_examples_dataset = prepare_for_training(test_examples)
 
-base_model = MobileNet(weights="imagenet", include_top=False)
+## Validation Task 1
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
 
-for layer in base_model.layers:
-    layer.trainable = False
+print(next(iter(test_examples_dataset))[0].shape)
+print(next(iter(test_examples))[0].shape)
+exit(0)
+
+
+## End of validation of task 1. (please remove prints and exits after ending it)
+
+# Task 2: Create a model that has the following structure:
+
+    #   - As base model MobileNet without the top layer, recall to make it non trainable
+    #   - 1 Global Average Pooling
+    #   - 1 Dense Layer of 1024 units
+    #   - 1 Dense layer of 512 units
+    #   - A softmax layer to classify one of the 8 brands
+
+base_model = None  # FILL ME
 
 x = base_model.output
-x = GlobalAveragePooling2D()(x)
-x = Flatten()(x)
-x = Dense(1024, activation="relu")(x)
-x = Dense(512, activation="relu")(x)
-preds = Dense(8, activation="softmax")(x)
+# Fill the rest of the model
+preds = Dense()(x) # Fill the kwargs
 
 model = Model(inputs=base_model.input, outputs=preds)
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-model.summary()
-hist = model.fit(train_examples_dataset,
-                 epochs=epochs,
-                 steps_per_epoch=image_count_train / train_batch_size,
-                 validation_steps=np.floor(image_count_test / train_batch_size),
-                 validation_data=test_examples_dataset
-                 )
+
+## Validation Task 2
+## This is for validation only, after you finish the task feel free to remove the prints and the exit command
+print(model.summary())
+exit(0)
+
+# Task 3: Train the model for 5 epochs and pass the validation data to be the test_examples_dataset
+
+model.fit()  # Fill the required kwargs here
+
 # # save model
 model.save("logo_classifier")
