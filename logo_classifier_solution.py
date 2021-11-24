@@ -20,8 +20,9 @@ steps_per_epoch = np.ceil(image_count_train / train_batch_size)
 class_names = np.array([item.name for item in data_dir.glob('Train/*') if item.name != "LICENSE.txt"])
 num_classes = len(class_names)
 
-test_ds = tf.data.Dataset.list_files(str(data_dir / 'Test/*/*'))
-train_ds = tf.data.Dataset.list_files(str(data_dir / 'Train/*/*'))
+
+def create_generator(folder):
+    return tf.data.Dataset.list_files(str(data_dir / f'{folder}/*/*'))
 
 
 def get_label(file_path):
@@ -42,11 +43,8 @@ def process_path(file_path):
     return img, label
 
 
-def format_image(image, label):
-    image = tf.image.resize(image, (img_rows, img_cols)) / 255.0
-    return image, label
-
-
+test_ds = create_generator('Test')
+train_ds = create_generator('Train')
 train_examples = train_ds.map(process_path)
 test_examples = test_ds.map(process_path)
 
