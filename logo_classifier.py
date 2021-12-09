@@ -20,6 +20,7 @@ steps_per_epoch = np.ceil(image_count_train / train_batch_size)
 class_names = np.array([item.name for item in data_dir.glob('Train/*') if item.name != "LICENSE.txt"])
 num_classes = len(class_names)
 
+
 # Task 1: Code the following 4 methods to:
 
 # - Create a generator of all the files under the train and test folders
@@ -27,10 +28,13 @@ num_classes = len(class_names)
 # - Read the image
 # - Decode the image from jpeg, convert to float32, resize to 224 x 224 and normalize.
 
+## INSERT TASK 1 CODE HERE
+
 def create_generator(folder):
     generator = ()
     # FILL ME
     return generator
+
 
 def get_label(file_path):
     label = 0
@@ -45,14 +49,19 @@ def decode_img(img):
 
 def process_path(file_path):
     label = get_label(file_path)
-    img = None # FILL to read img
+    img = None  # FILL to read img
     img = decode_img(img)
     return img, label
+
+
+## END TASK 1 CODE
+
 
 test_ds = create_generator('Test')
 train_ds = create_generator('Train')
 train_examples = train_ds.map(process_path)
 test_examples = test_ds.map(process_path)
+
 
 # This is to create batches out of our generators, it is not key to the learning objectives and can be copied as is
 def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
@@ -67,6 +76,7 @@ def prepare_for_training(ds, cache=True, shuffle_buffer_size=1000):
     ds = ds.prefetch(buffer_size=AUTOTUNE)
     return ds
 
+
 train_examples_dataset = prepare_for_training(train_examples)
 test_examples_dataset = prepare_for_training(test_examples)
 
@@ -77,27 +87,29 @@ print(next(iter(test_examples_dataset))[0].shape)
 print(next(iter(test_examples))[0].shape)
 exit(0)
 
-
 ## End of validation of task 1. (please remove prints and exits after ending it)
 
 # Task 2: Create a model that has the following structure:
 
-    #   - As base model MobileNet without the top layer, recall to make it non trainable
-    #   - 1 Global Average Pooling
-    #   - 1 Dense Layer of 1024 units
-    #   - 1 Dense layer of 512 units
-    #   - A softmax layer to classify one of the 8 brands
+#   - As base model MobileNet without the top layer, recall to make it non trainable
+#   - 1 Global Average Pooling
+#   - 1 Dense Layer of 1024 units
+#   - 1 Dense layer of 512 units
+#   - A softmax layer to classify one of the 8 brands
+
+## INSERT TASK 2 CODE HERE
 
 base_model = None  # FILL ME
 
 x = base_model.output
 # Fill the rest of the model
-preds = Dense()(x) # Fill the kwargs
+preds = Dense()(x)  # Fill the kwargs
+
+## END TASK 2 CODE
 
 model = Model(inputs=base_model.input, outputs=preds)
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
-
 
 ## Validation Task 2
 ## This is for validation only, after you finish the task feel free to remove the prints and the exit command
@@ -106,7 +118,11 @@ exit(0)
 
 # Task 3: Train the model for 5 epochs and pass the validation data to be the test_examples_dataset
 
+## INSERT TASK 3 CODE HERE
+
 model.fit()  # Fill the required kwargs here
+
+## END TASK 3 CODE
 
 # # save model
 model.save("logo_classifier")
