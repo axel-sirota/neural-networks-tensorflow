@@ -12,7 +12,7 @@ data_dir = pathlib.Path('Car_Brand_Logos')
 image_count_train = len(list(data_dir.glob('Train/*/*.jpg')))
 image_count_test = len(list(data_dir.glob('Test/*/*.jpg')))
 
-epochs = 5
+epochs = 2
 train_batch_size = 128
 val_batch_size = 6
 img_rows, img_cols = 224, 224
